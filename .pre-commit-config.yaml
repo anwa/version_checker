@@ -1,0 +1,63 @@
+ci:
+    autoupdate_schedule: quarterly
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: requirements-txt-fixer
+      - id: check-docstring-first
+      - id: detect-private-key
+      - id: check-yaml
+      - id: check-json
+
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.2.1
+    hooks:
+    -   id: autoflake
+        args:
+        - --remove-all-unused-imports
+        - --remove-unused-variables
+
+  - repo: https://github.com/psf/black
+    rev: 23.11.0
+    hooks:
+      - id: black
+        args: [--safe, --line-length=100]
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+
+#  - repo: https://github.com/pre-commit/mirrors-mypy
+#    rev: v1.7.0
+#    hooks:
+#      - id: mypy
+#        args: [--disable-error-code=name-defined, --disable-error-code=import]
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.0
+    hooks:
+      - id: pyupgrade
+        args: [--py310-plus]
+
+  - repo: https://github.com/DanielNoord/pydocstringformatter
+    rev: v0.7.3
+    hooks:
+      - id: pydocstringformatter
+        args:
+          [--style=numpydoc, --no-numpydoc-name-type-spacing]
+
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.17  # Use the ref you want to point at
+    hooks:
+    - id: mdformat
+      # Optionally add plugins
+      additional_dependencies:
+      - mdformat-gfm
+      - mdformat-black
