@@ -3,7 +3,7 @@
 ## venv
 
 ```bash
-py -m venv .venv
+python -m venv .venv
 ./.venv/scripts/activate
 deactivate
 ```
@@ -12,7 +12,7 @@ deactivate
 
 ```bash
 pip install x
-pip install x
+pip uninstall x
 pip freeze > requirements.txt
 pip install -r requirements.txt
 ```
