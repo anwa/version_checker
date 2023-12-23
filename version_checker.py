@@ -1,45 +1,57 @@
-import requests
-from packaging import version
+import configparser
+import logging
 import os
-import re
+import sys
+
+from bitwarden import bitwarden
+from git import git
+from powershell import powershell
+from python import python
+from sourcetree import sourcetree
+from terminal import terminal
+from tortoise_git import tortoise_git
+from vscode import vscode
+
+# Setup logging
+logging.basicConfig(
+    format="[%(asctime)s] %(levelname)s : %(message)s (Line: %(lineno)d [%(filename)s])",
+    datefmt="%d.%m.%Y %H:%M:%S",
+    # filename="version_checker.log",
+    level=logging.INFO,
+    encoding="utf-8",
+    handlers=[logging.FileHandler("version_checker.log"), logging.StreamHandler()],
+)
+
+# Read the configuration file
+config = configparser.ConfigParser()
+config.read("version_checker.conf")
+base_folder = config.get("main", "base_folder")
 
 
-# Funktion, um die Version aus dem Dateinamen zu extrahieren
-def extract_version_from_filename(filename):
-    match = re.search(r'VSCodeUserSetup-x64-(\d+\.\d+\.\d+)\.exe', filename)
-    return match.group(1) if match else None
+def main():
+    # Ensure that base_folder exists
+    os.makedirs(base_folder, exist_ok=True)
 
-# Überprüfen Sie das aktuelle Verzeichnis nach einer VSCode Installationsdatei
-local_version = '0'
-file_to_delete = None
-for file in os.listdir('.'):
-    if file.startswith('VSCodeUserSetup-x64-') and file.endswith('.exe'):
-        extracted_version = extract_version_from_filename(file)
-        if extracted_version and (extracted_version > local_version):
-            if file_to_delete:
-                os.remove(file_to_delete)
-            local_version = extracted_version
-            file_to_delete = file
+    logging.info("Checking PowerShell...")
+    powershell(base_folder)
 
-# URL der GitHub API für das neueste Release von Visual Studio Code
-api_url = "https://api.github.com/repos/microsoft/vscode/releases/latest"
+    logging.info("Checking Windows Terminal...")
+    terminal(base_folder)
+    logging.info("Checking Visual Studio Code...")
+    vscode(base_folder)
+    logging.info("Checking Git...")
+    git(base_folder)
+    logging.info("Checking TortoiseGit...")
+    tortoise_git(base_folder)
+    logging.info("Checking SourceTree...")
+    sourcetree(base_folder)
+    logging.info("Checking Python...")
+    python(base_folder)
+    logging.info("Checking Bitwarden...")
+    bitwarden(base_folder)
 
-# API-Anfrage an GitHub senden
-response = requests.get(api_url)
-latest_release_data = response.json()
+    return 0
 
-# Neueste Version extrahieren
-latest_release_version = latest_release_data.get("tag_name", "").replace('v', '')
 
-# Vergleichen Sie die neueste Version mit der lokalen Version
-if latest_release_version > local_version:
-    # Neuestes Release herunterladen
-    download_url = "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user"
-    response = requests.get(download_url)
-    download_filename = f'VSCodeUserSetup-x64-{latest_release_version}.exe'
-    with open(download_filename, "wb") as file:
-        file.write(response.content)
-
-    # Löschen der älteren Version, falls vorhanden
-    if file_to_delete:
-        os.remove(file_to_delete)
+if __name__ == "__main__":
+    sys.exit(main())
