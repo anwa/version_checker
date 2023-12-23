@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "version-checker"
+version = "0.1.0"
+description = ""
+authors = ["Andreas Wansner <andreas@anwa-soft.de>"]
+license = "Mit"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+configparser = "^6.0.0"
+logging = "^0.4.9.6"
+urllib3 = "^2.1.0"
+requests = "^2.31.0"
+packaging = "^23.2"
+pre-commit = "^3.6.0"
+bs4 = "^0.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

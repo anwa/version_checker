@@ -17,6 +17,42 @@ pip freeze > requirements.txt
 pip install -r requirements.txt
 ```
 
+## Poetry
+
+##### Install Poetry
+
+```bash
+pip install poetry
+poetry config virtualenvs.in-project true
+```
+
+##### Setup a new Project
+
+```bash
+cd d:/Workspace
+poetry new newProject
+cd newProject
+```
+
+##### Setup a existing Project
+
+```bash
+cd d:/Workspace/existingProject
+poetry init
+```
+
+##### Add dependencies
+
+```bash
+poetry add configparser
+```
+
+##### Remove dependencies
+
+```bash
+poetry remove configparser
+```
+
 ## pre-commit
 
 ##### Produce a sample .pre-commit-config.yaml file
